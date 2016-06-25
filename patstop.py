@@ -29,11 +29,13 @@ def get_next_bus(stop_id):
 @app.route('/stops/<stop_id>/<route>', methods=['GET'])
 def get_next_route(stop_id, route):
     current_stop = Stop.get(api, stop_id)
-    next_route = current_stop.predictions(route=route).next()
+    
+    try:
+        next_route = current_stop.predictions(route=route).next()
+        return 'The next %s is arriving at %s' % (route, next_route.eta)
+    except:
+        return "Route Does Not Stop Here"
 
-    #Need to catch 'No Service'
-
-    return 'The next %s is arriving at %s' % (route, next_route.eta)
 
 if __name__ == "__main__":
     app.run(debug=True)
